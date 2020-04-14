@@ -1,0 +1,134 @@
+$panel-color: #e3ecfa;
+$content-color: #c9edf5;
+$space: 20px;
+
+%center-all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: auto;
+}
+
+.wrapper {
+  width: 90%;
+  margin: 0px auto;
+  display: flex;
+  height: calc(100% - 50px);
+  border: 1px solid black;
+  margin-top: 25px;
+
+  .panel {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    background-color: $panel-color;
+
+    &.closed {
+      width: 400px;
+    }
+
+    > div {
+      padding: $space;
+    }
+
+    .search {
+      height: 50px;
+      @extend %center-all;
+      input {
+        width: 100%;
+        border-radius: 5px;
+      }
+    }
+
+    .toolbar {
+      height: 50px;
+      display: flex;
+      align-items: center;
+
+      button {
+        width: 50px;
+        height: 50px;
+        margin-right: 20px;
+      }
+    }
+
+    .components-tree {
+      flex: 1;
+
+      .tree { 
+        &:not(:last-child) {
+          margin-bottom: $space;
+        }
+
+        div {
+          margin: 5px auto;
+        }
+
+        span {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .content {
+    flex: 1;
+    background-color: $content-color;
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      padding: $space;
+    }
+
+    .component-name {
+      height: 100px;
+      @extend %center-all;
+    }
+
+    .editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      form {
+        > div {
+          display: flex;
+  
+          &:not(:last-child) {
+            margin-bottom: $space;
+          }
+  
+          label {
+            text-transform: capitalize;
+            width: 120px;
+          }
+  
+          textarea, input, select {
+            flex: 1;
+            margin-left: $space;
+          }
+
+          textarea {
+            min-height: 100px;
+          }
+        }
+
+        button {
+          float: right;
+        }
+      }
+      
+    }
+  }
+}
