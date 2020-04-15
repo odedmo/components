@@ -49,6 +49,13 @@ export default class Editor {
         }
         this.state.selectedComponent[field.name] = field.value;
       });
+      const filtered = [...this.appState.state.components];
+      filtered.splice(this.state.selectedIndex, 1);
+      const duplicatedName = filtered.some(component => component.name === this.state.selectedComponent.name);
+      if (duplicatedName) {
+        alert('duplicated component name');
+        return;
+      }
       const clonedComponents = [...this.appState.state.components];
       previousName && clonedComponents.forEach(component => {
         if (component.parent === previousName) {
