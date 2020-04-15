@@ -2,7 +2,7 @@ export default class ComponentName {
   constructor() {
     this.parent = null;
     this.state = {
-      selectedComponent: {}
+      name: null
     }
   }
 
@@ -12,14 +12,14 @@ export default class ComponentName {
     }
     if (!this.parent) return;
 
-    this.parent.innerHTML = `<h2>${this.state.selectedComponent.name || ''}</h2>`
+    this.parent.innerHTML = `<h2>${this.state.name || ''}</h2>`
   }
 
   update(appState) {
-    if (JSON.stringify(appState.selectedComponent) === JSON.stringify(this.state.selectedComponent)) {
+    if (!appState.selectedIndex || this.state.name === appState.components[appState.selectedIndex].name) {
       return;
     }
-    this.state.selectedComponent = {...appState.selectedComponent};
+    this.state.name = appState.components[appState.selectedIndex].name;
     this.render();
   }
 }

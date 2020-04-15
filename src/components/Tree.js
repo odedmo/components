@@ -1,10 +1,13 @@
+import _ from 'lodash';
+
 export default class Tree {
   constructor(state = {}) {
     this.appState = state;
     this.parent = null;
     this.state = {
       tree: {},
-      selectedComponent: null
+      selectedIndex: null,
+      components: []
     };
   }
 
@@ -13,7 +16,7 @@ export default class Tree {
       return;
     }
     if (Object.keys(this.state.tree).length === 0) {
-      tree = tree.reverse();
+      // populate roots
       let index = tree.length;
       while (index--) {
         if (!('parent' in tree[index])) {
@@ -22,6 +25,7 @@ export default class Tree {
         }
       }
     } else {
+      // populate children
       const findParent = component => {
         let parentFound = false;
 
@@ -91,9 +95,9 @@ export default class Tree {
         if (!(e.target.tagName === 'SPAN')) {
           return;
         }
-        const selectedComponent = this.appState.state.components.find(component => component.name === e.target.innerText);
-        this.state = {...this.state, selectedComponent};
-        this.appState.setState({...this.appState.state, ...this.state});
+        const selectedIndex = this.appState.state.components.findIndex(component => component.name === e.target.innerText);
+        this.state = {...this.state, selectedIndex};
+        this.appState.setState({...this.appState.state, selectedIndex: this.state.selectedIndex});
       })
     })
   }
@@ -102,19 +106,20 @@ export default class Tree {
     if (parent) {
       this.parent = parent;
     }
-    if (!this.parent) return;
+    if (!this.parent) {
+      return;
+    }
     this.renderStructures();
   }
 
   update(appState) {
     // should render condition
-    if (JSON.stringify(appState.tree) === JSON.stringify(this.state.tree)) {
+    if (JSON.stringify(appState.components) === JSON.stringify(this.state.components)) {
       return;
     }
-    // initial tree build
-    if (Object.keys(this.state.tree).length === 0) {
-      this.buildStructures([...appState.components]);
-    }
+    this.state.tree = {};
+    this.state.components = _.cloneDeep(appState.components);
+    this.buildStructures(_.cloneDeep(this.state.components));
     this.render();
   }
 }

@@ -20,7 +20,7 @@ appState.addObserver(tree);
 appState.addObserver(componentName);
 appState.addObserver(editor);
 
-appState.setState({ components });
+appState.setState({ components: components.reverse() });
 
 document.addEventListener('DOMContentLoaded', () => {
   const searchParent = document.getElementsByClassName('search')[0];
