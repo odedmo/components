@@ -1,11 +1,11 @@
 import './style.scss';
 import components from "./utils/components";
 import State from './lib/State';
-import Search from './components/Search';
-import Toolbar from './components/Toolbar';
-import Tree from './components/Tree';
-import ComponentName from './components/ComponentName';
-import Editor from './components/Editor';
+import Search from './components/search/Search';
+import Toolbar from './components/toolbar/Toolbar';
+import Tree from './components/tree/Tree';
+import ComponentName from './components/componentName/ComponentName';
+import Editor from './components/editor/Editor';
 
 const appState = new State();
 const search = new Search(appState);

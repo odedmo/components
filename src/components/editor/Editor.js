@@ -1,4 +1,4 @@
-import componentsSchema from "../utils/componentsSchema";
+import componentsSchema from "../../utils/componentsSchema";
 
 export default class Editor {
   constructor(state = {}) {

@@ -1,0 +1,17 @@
+.components-tree {
+  flex: 1;
+
+  .tree { 
+    &:not(:last-child) {
+      margin-bottom: $space;
+    }
+
+    div {
+      margin: 5px auto;
+    }
+
+    span {
+      cursor: pointer;
+    }
+  }
+}
