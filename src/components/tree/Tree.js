@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash/lang';
 
 export default class Tree {
   constructor(state = {}) {
@@ -9,59 +9,6 @@ export default class Tree {
       selectedIndex: null,
       components: []
     };
-  }
-
-  buildStructures(tree) {
-    if (tree.length === 0) {
-      return;
-    }
-    if (Object.keys(this.state.tree).length === 0) {
-      // populate roots
-      let index = tree.length;
-      while (index--) {
-        if (!('parent' in tree[index])) {
-          this.state.tree[tree[index].name] = tree[index];
-          tree.splice(index, 1);
-        }
-      }
-    } else {
-      // populate children
-      const findParent = component => {
-        let parentFound = false;
-
-        const findInStructure = currentLevel => {
-          if (Array.isArray(currentLevel)) {
-            return currentLevel.some(comp => findInStructure(comp));
-          } else if (currentLevel.name === component.parent) {
-            if (!currentLevel.children) {
-              currentLevel.children = [];
-            }
-            currentLevel.children.push(component);
-            return true;
-          } else if (currentLevel.children) {
-            return findInStructure(currentLevel.children);
-          }
-          return false;
-        };
-
-        for (const root in this.state.tree) {
-          if (findInStructure(this.state.tree[root])) {
-            parentFound = true;
-            break;
-          }
-        }
-
-        return parentFound;
-      }
-
-      let index = tree.length;
-      while (index--) {
-        if (findParent(tree[index])) {
-          tree.splice(index, 1);
-        }
-      }
-    };
-    this.buildStructures(tree);
   }
 
   renderStructures() {
@@ -102,6 +49,48 @@ export default class Tree {
     })
   }
 
+  buildStructures(componentsClone) {
+    const buildTree = parents => {
+      if (parents.length === 0) {
+        return;
+      }
+      const children = [];
+      parents.forEach(parent => {
+        componentsClone.forEach(component => {
+          if (component.parent === parent.name) {
+            if (!('children' in parent)) {
+              parent.children = [];
+            }
+            parent.children.push({...component});
+            children.push(parent.children[parent.children.length - 1]);
+          }
+        })
+      });
+      buildTree(children);
+    };
+    let roots = [];
+    if (this.appState.state.searchIndex) {
+      let root = componentsClone[this.appState.state.searchIndex]; 
+      if (root.parent) {
+        const parent = componentsClone.find(component => component.name === root.parent);
+        parent.children = [{...root}];
+        this.state.tree[parent.name] = {...parent};
+        roots.push(this.state.tree[parent.name].children[0]);
+      } else {
+        this.state.tree[root.name] = {...root};
+        roots.push(this.state.tree[root.name]);
+      }
+    } else {
+      componentsClone.forEach(component => {
+        if (!component.parent) {
+          this.state.tree[component.name] = {...component};
+          roots.push(this.state.tree[component.name]);
+        }
+      });
+    }
+    buildTree(roots);
+  }
+
   render(parent) {
     if (parent) {
       this.parent = parent;
@@ -113,10 +102,9 @@ export default class Tree {
   }
 
   update(appState) {
-    // should render condition
-    if (JSON.stringify(appState.components) === JSON.stringify(this.state.components)) {
-      return;
-    }
+    // if (JSON.stringify(appState.components) === JSON.stringify(this.state.components)) {
+    //   return;
+    // }
     this.state.tree = {};
     this.state.components = _.cloneDeep(appState.components);
     this.buildStructures(_.cloneDeep(this.state.components));

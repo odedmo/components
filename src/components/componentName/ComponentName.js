@@ -16,10 +16,10 @@ export default class ComponentName {
   }
 
   update(appState) {
-    if (!appState.selectedIndex || this.state.name === appState.components[appState.selectedIndex].name) {
+    if (appState.selectedIndex != null && this.state.name === appState.components[appState.selectedIndex].name) {
       return;
     }
-    this.state.name = appState.components[appState.selectedIndex].name;
+    this.state.name = appState.selectedIndex != null ? appState.components[appState.selectedIndex].name : '';
     this.render();
   }
 }

@@ -1,4 +1,5 @@
 import componentsSchema from "../../utils/componentsSchema";
+import { hasDuplicates } from '../../utils/validations';
 
 export default class Editor {
   constructor(state = {}) {
@@ -10,11 +11,46 @@ export default class Editor {
     }
   }
 
+  onSubmit(e, form) {
+    e.preventDefault();
+    const fields = [...form.elements];
+    fields.pop();
+    // validate name
+    let previousName = null;
+    if (fields[0].value !== this.state.selectedComponent.name) {
+      previousName = this.state.selectedComponent.name;
+      if (hasDuplicates(this.appState.state.components, fields[0].value)) {
+        alert('duplicated component name');
+        return;
+      }
+    }
+
+    fields.forEach(field => {
+      this.state.selectedComponent[field.name] = field.value;
+    });
+
+    this.state.components = [...this.appState.state.components];
+    this.state.components[this.state.selectedIndex] = {...this.state.selectedComponent};
+
+    previousName && this.state.components.forEach(component => {
+      if (component.parent === previousName) {
+        component.parent = this.state.selectedComponent.name;
+      }
+    });
+
+    this.appState.setState({...this.appState.state, components: this.state.components});
+  }
+
   render(parent) {
     if (parent) {
       this.parent = parent;
     }
-    if (!this.parent || !this.state.selectedComponent.type) return;
+    if (!this.parent) return;
+
+    if (!this.state.selectedComponent.type) {
+      this.parent.innerHTML = '';
+      return;
+    }
 
     let output = `<form>`;
     Object.keys(componentsSchema[this.state.selectedComponent.type]).forEach(prop => {
@@ -39,31 +75,7 @@ export default class Editor {
     this.parent.innerHTML = output;
     const form = this.parent.getElementsByTagName('form')[0];
     form.addEventListener('submit', e => {
-      e.preventDefault();
-      const fields = [...form.elements];
-      let previousName = null;
-      fields.pop();
-      fields.forEach(field => {
-        if (field.name === 'name' && this.state.selectedComponent.name !== field.value) {
-          previousName = this.state.selectedComponent.name;
-        }
-        this.state.selectedComponent[field.name] = field.value;
-      });
-      const filtered = [...this.appState.state.components];
-      filtered.splice(this.state.selectedIndex, 1);
-      const duplicatedName = filtered.some(component => component.name === this.state.selectedComponent.name);
-      if (duplicatedName) {
-        alert('duplicated component name');
-        return;
-      }
-      const clonedComponents = [...this.appState.state.components];
-      previousName && clonedComponents.forEach(component => {
-        if (component.parent === previousName) {
-          component.parent = this.state.selectedComponent.name;
-        }
-      })
-      clonedComponents[this.state.selectedIndex] = this.state.selectedComponent;
-      this.appState.setState({...this.appState.state, components: clonedComponents});
+      this.onSubmit(e, form)
     });
     const select = this.parent.getElementsByTagName('select')[0];
     select && select.addEventListener('change', e => {
@@ -73,8 +85,11 @@ export default class Editor {
   }
 
   update(appState) {
+    if (isNaN(appState.selectedIndex) || appState.selectedIndex === this.state.selectedIndex) {
+      return;
+    }
     this.state.selectedIndex = appState.selectedIndex;
-    this.state.selectedComponent = {...appState.components[this.state.selectedIndex]};
+    this.state.selectedComponent = this.state.selectedIndex != null ? {...appState.components[this.state.selectedIndex]} : {};
     this.render();
   }
 }

@@ -1,27 +1,27 @@
 export default {
   "container": {
-    "name": true, 
-    "type": true, 
-    "data_sql": true,
-    "description": true
+    "name": "new container component", 
+    "type": "container", 
+    "data_sql": "",
+    "description": ""
   },
   "category": {
-    "name": true, 
-    "type": true, 
-    "data_sql": true,
-    "configuration_sql": true,
-    "global_sql": true
+    "name": "new category component", 
+    "type": "category", 
+    "data_sql": "",
+    "configuration_sql": "",
+    "global_sql": ""
   },
   "grid": {
-    "name": true, 
-    "type": true, 
-    "data_sql": true
+    "name": "new grid component", 
+    "type": "grid", 
+    "data_sql": ""
   },
   "chart": {
-    "name": true, 
-    "type": true, 
-    "data_sql": true,
-    "configuration_sql": true
+    "name": "new chart component", 
+    "type": "chart", 
+    "data_sql": "",
+    "configuration_sql": ""
   }
 }
    

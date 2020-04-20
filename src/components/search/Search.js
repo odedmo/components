@@ -2,7 +2,27 @@ export default class Search {
   constructor(state = {}) {
     this.appState = state;
     this.parent = null;
-    this.state = { search: null };
+    this.state = { 
+      searchIndex: null
+    };
+  }
+
+  onSubmit(e, form) {
+    e.preventDefault();
+    const fields = [...form.elements];
+    const searchTerm = fields[0].value;
+    if (searchTerm === '') {
+      this.state.searchIndex = this.state.selectedIndex = null;
+    } else {
+      const index = this.appState.state.components.findIndex(component => {
+        return component.name === searchTerm;
+      });
+      if (index < 0) {
+        return;
+      }
+      this.state.searchIndex = this.state.selectedIndex = index;
+    }
+    this.appState.setState({...this.appState.state, ...this.state});
   }
 
   render(parent) {
@@ -16,21 +36,15 @@ export default class Search {
       </form>
     `;
     const form = this.parent.getElementsByTagName('form')[0];
-
     form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const fields = [...form.elements];
-      const searchTerm = fields[0].value;
-
-      // this.state = {...this.state, search: e.target.value}
-      // this.appState.setState(this.state);
+      this.onSubmit(e, form);
     });
   }
 
   update(appState) {
-    if (appState.search === this.state.search) {
+    if (typeof appState.searchIndex !== typeof this.state.searchIndex || appState.searchIndex === this.state.searchIndex) {
       return;
     }
-    this.parent && this.render();
+    this.render();
   }
 }
