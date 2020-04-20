@@ -33,4 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
   tree.render(treeParent);
   componentName.render(componentNameParent);
   editor.render(editorParent);
+
+  const panel = document.getElementsByClassName('panel')[0];
+  const togglePanel = document.getElementsByClassName('toggle-panel')[0];
+  const openBtn = togglePanel.getElementsByTagName('button')[0];
+  const closeBtn = togglePanel.getElementsByTagName('button')[1];
+
+  openBtn.addEventListener('click', e => {
+    panel.classList.remove('closed');
+    openBtn.classList.add('hidden');
+    closeBtn.classList.remove('hidden');
+  });
+
+  closeBtn.addEventListener('click', e => {
+    panel.classList.add('closed');
+    openBtn.classList.remove('hidden');
+    closeBtn.classList.add('hidden');
+  });
 });

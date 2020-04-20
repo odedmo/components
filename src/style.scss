@@ -32,15 +32,32 @@ html, body {
   height: calc(100% - 50px);
   border: 1px solid black;
   margin-top: 25px;
+  background-color: $content-color;
+  position: relative;
+
+  > .toggle-panel {
+    position: absolute;
+    z-index: 1;
+
+    button.hidden {
+      display: none;
+    }
+  }
 
   .panel {
     width: 400px;
     display: flex;
     flex-direction: column;
     background-color: $panel-color;
+    transition: width .5s ease-in-out, opacity .5s;
 
     &.closed {
-      width: 400px;
+      width: 0px;
+      opacity: 0;
+
+      .components-tree {
+        display: none;
+      }
     }
 
     > div {
